@@ -1,0 +1,87 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.0.0'
+	id 'io.spring.dependency-management' version '1.1.0'
+}
+
+group = 'com.test'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+sourceSets {
+	main {
+		resources {
+			srcDir 'src/main/java'
+		}
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// DB
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.1'
+	implementation 'mysql:mysql-connector-java:8.0.31'
+	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc3:1.16'
+	implementation 'com.zaxxer:HikariCP:5.0.1'
+
+	// API Doc
+	//implementation 'io.springfox:springfox-swagger2:2.8.0'
+	//implementation 'io.springfox:springfox-swagger-ui:2.8.0'
+
+
+	// Json
+	implementation 'com.google.code.gson:gson:2.10'
+
+	// JWT
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+	// HAPI FHIR
+	implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:6.2.2'
+	implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:6.2.2'
+	implementation 'ca.uhn.hapi.fhir:hapi-fhir-client:6.2.2'
+
+	// PageHelper (paging)
+	implementation 'com.github.pagehelper:pagehelper-spring-boot-starter:1.4.5'
+
+	// Java Mail Sender
+	implementation 'org.springframework.boot:spring-boot-starter-mail:3.0.1'
+
+	// Excel Uploader/Reader
+	implementation 'org.apache.poi:poi:5.0.0'
+	implementation 'org.apache.poi:poi-ooxml:5.0.0'
+
+	// File Upload (for excel)
+	implementation 'commons-io:commons-io:2.11.0'
+	implementation 'commons-fileupload:commons-fileupload:1.4'
+
+	// Etc
+	implementation 'com.google.guava:guava:31.1-jre'
+	implementation 'org.springframework.boot:spring-boot-configuration-processor:3.0.1'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:3.0.1'
+
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+
+}
+
+
+

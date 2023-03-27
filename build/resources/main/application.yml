@@ -1,0 +1,69 @@
+spring:
+    # Commons Multipart
+    servlet:
+        multipart:
+            enabled: true
+            max-file-size: 50MB
+            max-request-size: 50MB
+
+    # DB
+    datasource:
+        hikari:
+            driver-class-name: com.mysql.cj.jdbc.Driver
+            jdbc-url: jdbc:mysql://yezac.c4klnazd4gpd.ap-northeast-2.rds.amazonaws.com:3306/yezac?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+            username: admin
+            password: YoungD0808
+            connection-timeout: 30000
+            validation-timeout: 30000
+            minimum-idle: 5
+            max-lifetime: 240000
+            maximum-pool-size: 20
+
+    # java email sender
+    mail:
+        host: smtp.gmail.com
+        port: 587
+        username: davidoh@m-ultiply.com     #email id
+        password: qvfwuatyzfxtjnyy          #email pw (Gmail App Password)
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+
+
+# email verification base url
+user_verification:
+    yezac_veri_email: davidoh@m-ultiply.com
+    yezac_proj_baseUrl: http://localhost:8080
+
+# Mybatis
+# mybatis:
+#    mapper-locations:
+
+#  Spring Doc
+springdoc:
+    default-consumes-media-type: application/json
+    default-produces-media-type: application/json
+    swagger-ui:
+        path: swagger-ui/index.html
+
+# JWT
+application:
+    jwt:
+        secret-key: this-is-the-secret-key-for-yezac
+        token-prefix: Bearer
+        token-expiration-after-hours: 1
+
+
+
+# sl4fj logging mode
+logging:
+    level:
+        org:
+            springframework:
+                web: DEBUG
+                context: DEBUG
+
+

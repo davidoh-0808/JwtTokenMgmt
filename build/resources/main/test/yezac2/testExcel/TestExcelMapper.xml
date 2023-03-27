@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="test.yezac2.testExcel.TestExcelMapper">
+
+    <select id="getTestExcelData" parameterType="test.yezac2.testExcel.TestExcelReq" resultType="test.yezac2.testExcel.TestExcelData">
+        SELECT
+            *
+        FROM
+            test_excel_data ted
+        WHERE
+            ted.id IN (
+                <foreach collection="list" item="item" separator=",">
+                    #{item.idsToDownload}
+                </foreach>
+            )
+    </select>
+
+    <insert id="saveConvertedList" parameterType="Object">
+        INSERT INTO test_excel_data(
+            column1
+            , column2
+            , column3
+            , column4
+            , column5
+        )
+        VALUES
+        <foreach collection="list" item="item" index="index" open="(" separator="),("  close=")">
+            #{item.col1}
+            , #{item.col2}
+            , #{item.col3}
+            , #{item.col4}
+            , #{item.col5}
+        </foreach>
+    </insert>
+
+</mapper>

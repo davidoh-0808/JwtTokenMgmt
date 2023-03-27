@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="test.yezac2.global.config.security.auth.mapper.VerifTokenMapper">
+
+    <insert id="saveVerifToken" parameterType="test.yezac2.global.config.security.auth.dto.VerifTokenReq">
+        INSERT INTO verif_token (
+             token
+             , created_at
+             , expires_at
+             , verified_at
+             , users_id
+        ) VALUES (
+              #{token}
+              , now()
+              , date_add(now(), interval 5 minute)
+              , null
+              , FN_GET_USERS_ID_FROM_EMAIL(#{email})
+        )
+    </insert>
+
+    <select id="getVerifToken" parameterType="test.yezac2.global.config.security.auth.dto.VerifTokenReq" resultType="test.yezac2.global.config.security.auth.domain.VerifToken">
+        SELECT
+            *
+        FROM
+            verif_token v
+        WHERE
+            v.token = #{token}
+    </select>
+
+    <update id="setVerifiedAt" parameterType="test.yezac2.global.config.security.auth.dto.VerifTokenReq">
+        UPDATE
+            verif_token v
+        SET
+            v.verified_at = now()
+        WHERE
+            v.token = #{token}
+    </update>
+
+</mapper>
