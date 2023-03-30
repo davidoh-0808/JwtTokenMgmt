@@ -15,9 +15,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
+import test.yezac2.global.config.security.roleAuthority.RoleUrls;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,16 +47,29 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
     private final JwtConfig jwtConfig;
     private final JwtSecretKey jwtSecretKey;
 
+
+//    @Override
+//    protected boolean shouldNotFilter(HttpServletRequest servletReq) throws ServletException {
+//        return new AntPathMatcher().match("/auth", servletReq.getServletPath());
+//    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest servletReq, HttpServletResponse servletResp, FilterChain filterChain)
             throws ServletException, IOException {
 
+        /*
+        // for /auth and /authenticate paths (used during login), bypass this OncePerRequestFilter
+        if ( servletReq.getServletPath().equals("/auth") || servletReq.getServletPath().equals("/authenticate") ) {
+            filterChain.doFilter(servletReq, servletResp);          // TODO: CHECK -> 404 NOT FOUND ERROR occurs
+
+            return;
+        }
+        */
         String authHeader = servletReq.getHeader(jwtConfig.getAuthorizationHeader());
 
-        // 리퀘스트 헤더에 JWT 인증 헤더가 없다면 해당 필터종료
+        // 리퀘스트 헤더에 JWT 인증 헤더가 없다면 403 error 발생 및 해당 필터종료
         if (Strings.isNullOrEmpty(authHeader) || !authHeader.startsWith(jwtConfig.getTokenPrefix())) {
-            servletResp.sendError(HttpServletResponse.SC_FORBIDDEN, "리퀘스트 헤더에 JWT token 이 담겨있지 않습니다");
-
+            //servletResp.sendError(HttpServletResponse.SC_FORBIDDEN, "리퀘스트 헤더에 JWT token 이 담겨있지 않습니다");
             filterChain.doFilter(servletReq, servletResp);
 
             return;
@@ -63,9 +79,9 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
         String jwtToParse = authHeader.replace( jwtConfig.getTokenPrefix(), "").trim();
         try {
             Jws<Claims> claimsJws = Jwts.parserBuilder()
-                                        .setSigningKey( jwtSecretKey.getSecretKey() )
-                                        .build()
-                                        .parseClaimsJws( jwtToParse );
+                    .setSigningKey( jwtSecretKey.getSecretKey() )
+                    .build()
+                    .parseClaimsJws( jwtToParse );
 
             Claims body = claimsJws.getBody();
 
@@ -78,30 +94,43 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
             //  1) extract the current request url from HTTPServletRequest
             //  2) extract the urls allowed from the claim body
             //  3-1) compare 1) with 2),
-            //       if not exist -> sendError(HttpServletResponse.SC_FORBIDDEN, "현재 접속하는 URL에 대한 권한이 없습니다 (jwt 토큰의 urls_allowed 에 현재 접근 URL이 없음)")
+            //       if not exist -> sendError(HttpServletResponse.SC_FORBIDDEN (403), "현재 접속하는 URL에 대한 권한이 없습니다 (jwt 토큰의 urls_allowed 에 현재 접근 URL이 없음)")
             //  3-2) inject it into Authentication object
 
+            //List<Map<String, String>> authorities = (List<Map<String, String>>) body.get("authorities");
+            RoleUrls roleUrls = (RoleUrls) body.get("roleUrls");        // TODO: CHECK VALIDITY
+            // <String, List<String>> roleUrls = body.get("roleUrls);
 
-            // TODO: ****** 현재 request 에 담긴 url 주소가 jwt 의 urls_allowed 에 있지 않다면, sendError(401 status) (UsernamePasswordAuthenticationFilter 에서 주입됌) *****
+            // TODO: ****** 현재 request 에 담긴 url 주소가 jwt 의 urls_allowed 에 있지 않다면,
+            //  sendError(403 status) (UsernamePasswordAuthenticationFilter 에서 주입되어 옴) *****
+            // if(currentUrl.equals( "" )) {
+            // if the user's jwt token contains "schedule/hospital/daily", any requests like these, "schedule/hospital/daily/*", passes
+            List<String> urls_allowed = roleUrls.getUrls_allowed();
             String currentUrl = servletReq.getRequestURL().toString();  // servletReq.getQueryString()
-            if(currentUrl.equals( "" )) {
 
+            boolean isCurrentUrlAllowed = true;
+            for(String url : urls_allowed) {
+                if(currentUrl.lastIndexOf( url ) == -1 ) {
+                    isCurrentUrlAllowed = false;
+                }
             }
 
-            //List<Map<String, String>> authorities = (List<Map<String, String>>) body.get("authorities");
-            List<Map<String, String>> roleUrls = (List<Map<String, String>>) body.get("roleUrls");
+            if( !isCurrentUrlAllowed ) {
+                servletResp.sendError(HttpServletResponse.SC_FORBIDDEN, "유저는 현재 접속하는 URL에 대한 권한이 없습니다.");
+            }
 
-            // TODO: A LITTLE IFFY
+            /*
             Set<SimpleGrantedAuthority> simpleGrantedAuth = roleUrls.stream()
-                                                        .map( m -> new SimpleGrantedAuthority( m.get("urls_allowed") ) )
-                                                        .collect(Collectors.toSet());
+                .map( m -> new SimpleGrantedAuthority( m.get("urls_allowed") ) )
+                .collect(Collectors.toSet());
+            */
+            // TODO: CHECK a little iffy
+            List<SimpleGrantedAuthority> simpleGrantedAuths = new ArrayList<>();
+            for(String url : roleUrls.getUrls_allowed()) {
+                simpleGrantedAuths.add( new SimpleGrantedAuthority(url) );
+            }
 
-            Authentication auth = new UsernamePasswordAuthenticationToken(
-                                            username,
-                                            null,
-                                            simpleGrantedAuth
-                                    );
-
+            Authentication auth = new UsernamePasswordAuthenticationToken( username, null, simpleGrantedAuths );
             SecurityContextHolder.getContext().setAuthentication( auth );
 
         } catch (JwtException e) {

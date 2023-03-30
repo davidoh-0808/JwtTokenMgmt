@@ -10,7 +10,7 @@ spring:
     datasource:
         hikari:
             driver-class-name: com.mysql.cj.jdbc.Driver
-            jdbc-url: jdbc:mysql://localhost:3306
+            jdbc-url: jdbc:mysql://localhost:3306/user-mgmt
             username: root
             password:
             connection-timeout: 30000

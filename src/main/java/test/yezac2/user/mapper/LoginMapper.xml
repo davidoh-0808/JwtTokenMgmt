@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="test.yezac2.user.mapper.LoginMapper">
+
+    <select id="login" parameterType="test.yezac2.user.dto.LoginReq"
+            resultType="test.yezac2.user.dto.LoginResp">
+        SELECT
+            id
+             , name
+             , email
+             , first_registration_number
+             , second_registration_number
+             , phone_number
+             , sub_phone_number
+             , address
+             , medical_license_number
+             , password
+             , joined_at
+             , leaved_at
+             , expired_date
+             , hospital_id
+             , role_id
+             , is_locked
+             , is_deleted
+             , doctor_license_number
+             , created_at
+             , updated_at
+        FROM users
+        WHERE email = #{email}
+    </select>
+
+
+    <select id="getUserIdByEmail" parameterType="String" resultType="Long">
+        SELECT id
+        FROM users
+        WHERE email = #{email}
+    </select>
+
+    <select id="getUserRole" parameterType="Long" resultType="String">
+        SELECT
+            r.ko_name
+             , r.java_role
+        FROM users u
+        LEFT JOIN roles r
+            ON r.id = u.role_id
+        WHERE u.id = #{userId};
+    </select>
+
+    <select id="getUserUrlsAllowed" parameterType="Long" resultType="String">
+        SELECT
+            d3_nav.url_path
+        FROM depth3_navigations d3_nav
+        LEFT JOIN depth3_navigation_role d3_nav_role
+           ON d3_nav.id = d3_nav_role.depth3_navigation_id
+        WHERE d3_nav_role.role_id = (
+            SELECT r.id FROM roles r
+            INNER JOIN users u ON u.role_id = r.id
+            WHERE u.id = #{userId}
+        );
+    </select>
+
+</mapper>

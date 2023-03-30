@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="test.yezac2.user.mapper.AppUserMapper">
+
+    <select id="getAppUserByUsername" parameterType="String" resultType="test.yezac2.user.domain.AppUserDetails">
+        SELECT
+            u.email AS username
+            , u.password
+        FROM
+            users u
+        WHERE
+            u.email = #{email}
+    </select>
+
+    <select id="getUserDetailsByEmail" parameterType="String" resultType="test.yezac2.user.dto.UserDetailsDto">
+        SELECT
+            u.email
+            , u.password
+        FROM users u
+        WHERE u.email = #{email}
+    </select>
+
+    <insert id="saveAppUser" parameterType="test.yezac2.user.dto.JoinReq">
+        INSERT INTO users (
+            email
+            , password
+            , name
+            , hospital_id
+        ) VALUES (
+             #{email}
+             , #{password}
+             , #{name}
+             , #{authType}
+             , #{hospitalId}
+        )
+    </insert>
+
+    <update id="enableAppUser" parameterType="String">
+        UPDATE
+            users
+        SET
+            email_verified = TRUE
+        WHERE
+            email = #{email}
+    </update>
+
+</mapper>

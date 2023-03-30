@@ -15,6 +15,6 @@ public class RoleUrls {
     private String role;
 
     // 직군 상세별 접근 가능한 url (depth3_navigation_role, depth3_navigations 테이블)
-    private List<String> urls;
+    private List<String> urls_allowed;
 
 }

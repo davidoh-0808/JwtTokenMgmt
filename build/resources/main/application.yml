@@ -10,9 +10,9 @@ spring:
     datasource:
         hikari:
             driver-class-name: com.mysql.cj.jdbc.Driver
-            jdbc-url: jdbc:mysql://yezac.c4klnazd4gpd.ap-northeast-2.rds.amazonaws.com:3306/yezac?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-            username: admin
-            password: YoungD0808
+            jdbc-url: jdbc:mysql://localhost:3306/user-mgmt
+            username: root
+            password:
             connection-timeout: 30000
             validation-timeout: 30000
             minimum-idle: 5

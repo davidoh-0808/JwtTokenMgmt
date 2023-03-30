@@ -1,0 +1,15 @@
+package test.yezac2.user.service;
+
+
+import test.yezac2.user.dto.JoinReq;
+
+public interface JoinService {
+
+    /**
+     * return verif_token 인증 토큰
+     */
+    String joinUser(JoinReq req);
+
+    String verifyToken(String tokenOnLink);
+
+}

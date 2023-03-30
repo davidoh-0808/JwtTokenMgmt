@@ -12,7 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import test.yezac2.global.config.security.auth.service.LoginService;
+import test.yezac2.user.service.LoginService;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -52,7 +52,8 @@ public class JwtUsernamePasswordAuthFilter extends UsernamePasswordAuthenticatio
                     );
 
             // AuthenticationManager : returns a fully populated Authentication object (including granted authorities)
-            Authentication authComplete = authenticationManager.authenticate( usernamePasswordToken ); // TODO : ******* checking here *******
+            Authentication authComplete = authenticationManager.authenticate( usernamePasswordToken );
+            authComplete.isAuthenticated();
 
             return authComplete;
         } catch (Exception e) {
