@@ -37,9 +37,8 @@ dependencies {
 	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc3:1.16'
 	implementation 'com.zaxxer:HikariCP:5.0.1'
 
-	// API Doc
-	//implementation 'io.springfox:springfox-swagger2:2.8.0'
-	//implementation 'io.springfox:springfox-swagger-ui:2.8.0'
+	// OpenAPI (Swagger Spring Boot 3.x version)
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
 
 
 	// Json

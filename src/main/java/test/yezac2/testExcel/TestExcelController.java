@@ -8,12 +8,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import test.yezac2.global.common.ApiResponse;
-import test.yezac2.global.util.UtilExcelExporter;
-import test.yezac2.global.util.UtilExcelUploader;
+import test.yezac2.global.common.ApiResp;
+import test.yezac2.global.excel.UtilExcelExporter;
+import test.yezac2.global.excel.UtilExcelUploader;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -85,7 +84,7 @@ public class TestExcelController {
      * @throws FileNotFoundException
      */
     @PostMapping(value = "/upload")
-    public ResponseEntity<ApiResponse> upload(
+    public ResponseEntity<ApiResp> upload(
             /*@RequestPart TestExcelFile tef*/
             @RequestParam(value = "TestExcelFile") MultipartFile file
             ) throws Exception {
@@ -99,7 +98,7 @@ public class TestExcelController {
         testExcelMapper.saveConvertedList( convertedFile );
 
         return ResponseEntity.ok(
-                ApiResponse.builder().resultMessage("Excel File Uploaded Successfully").build()
+                ApiResp.builder().resultMessage("Excel File Uploaded Successfully").build()
         );
     }
 

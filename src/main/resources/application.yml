@@ -6,19 +6,21 @@ spring:
             max-file-size: 50MB
             max-request-size: 50MB
 
+    # TODO : DB 주소 변경해야함
     # DB
     datasource:
         hikari:
             driver-class-name: com.mysql.cj.jdbc.Driver
-            jdbc-url: jdbc:mysql://localhost:3306/user-mgmt
+            jdbc-url: jdbc:mysql://localhost:3306/auth
             username: root
-            password:
+            password: YoungD0808
             connection-timeout: 30000
             validation-timeout: 30000
             minimum-idle: 5
             max-lifetime: 240000
             maximum-pool-size: 20
 
+    # TODO : 메일센더 앱 pw 변경해야함
     # java email sender
     mail:
         host: smtp.gmail.com
@@ -32,6 +34,8 @@ spring:
                     starttls:
                         enable: true
 
+    jackson:
+        time-zone: Asia/Seoul
 
 # email verification base url
 user_verification:
@@ -43,20 +47,31 @@ user_verification:
 #    mapper-locations:
 
 #  Spring Doc
+yezac:
+    openapi:
+        dev-url:
+        prod-url:
+
 springdoc:
-    default-consumes-media-type: application/json
-    default-produces-media-type: application/json
     swagger-ui:
-        path: swagger-ui/index.html
+        # path: /index.html               #/swagger-ui/index.html
+        try-it-out-enabled: true
+        operations-sorter: method
+        tags-sorter: alpha
+        filter: true
+    api-docs:
+      path: /v3/api-docs
+    packages-to-scan: test.yezac2
+    packages-to-exclude:
 
 # JWT
 application:
     jwt:
         secret-key: this-is-the-secret-key-for-yezac
         token-prefix: Bearer
-        token-expiration-after-hours: 1
-
-
+        # access-token-expiration-in-hours: 2
+        access-token-expiration-in-minutes: 120 # access token 유효기간: 120분
+        refresh-token-expiration-in-hours: 4380  # access token 발급용 refresh token의 유효기간: 14일 (6개월)
 
 # sl4fj logging mode
 logging:
